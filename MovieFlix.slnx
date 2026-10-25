@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MovieFlix.Api/MovieFlix.Api.csproj" />
+  <Project Path="MovieFlix.Application/MovieFlix.Application.csproj" />
+  <Project Path="MovieFlix.Domain/MovieFlix.Domain.csproj" />
+  <Project Path="MovieFlix.Infrastructure/MovieFlix.Infrastructure.csproj" />
+</Solution>

@@ -1,0 +1,41 @@
+@baseUrl = http://localhost:5097
+
+### 1. Barcha janrlarni olish (Pagination)
+GET {{baseUrl}}/api/genres?pageNumber=1&pageSize=10
+Accept: application/json
+
+### 1.1. Qidiruv bilan olish (Search)
+GET {{baseUrl}}/api/genres?search=jang
+Accept: application/json
+
+### 2. Bitta janrni ID bo'yicha olish
+GET {{baseUrl}}/api/genres/1
+Accept: application/json
+
+### 2.1 Bitta janrni Slug bo'yicha olish
+GET {{baseUrl}}/api/genres/jangari
+Accept: application/json
+
+### 3. Yangi janr yaratish (POST)
+POST {{baseUrl}}/api/genres
+Content-Type: application/json
+
+{
+  "name": "Jangari",
+  "slug": ""
+}
+
+### 4. Janrni yangilash (PUT)
+PUT {{baseUrl}}/api/genres/1
+Content-Type: application/json
+
+{
+  "name": "Jangari Filmlar",
+  "slug": "jangari-filmlar"
+}
+
+### 5. Janrni o'chirish
+DELETE {{baseUrl}}/api/genres/1
+Content-Type: application/json
+
+###
