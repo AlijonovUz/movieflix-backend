@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MovieFlix.Application.Common.Interfaces;
 using MovieFlix.Infrastructure.Data;
+using MovieFlix.Infrastructure.Services;
 
 namespace MovieFlix.Infrastructure;
 
@@ -21,6 +22,7 @@ public static class DependencyInjection
         });
         
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
+        services.AddScoped<IFileService, FileService>();
         return services;
     }
 }

@@ -29,6 +29,7 @@ public static class ApplicationBuilderExtensions
         }
         
         app.UseHttpsRedirection();
+        app.UseStaticFiles();
         app.UseAuthorization();
         app.MapControllers();
         
