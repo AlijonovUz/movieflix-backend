@@ -483,3 +483,7 @@ $RECYCLE.BIN/
 *.db
 *.sqlite*
 *.db*
+
+# User uploaded files
+**/wwwroot/uploads/**
+!**/wwwroot/uploads/.gitkeep

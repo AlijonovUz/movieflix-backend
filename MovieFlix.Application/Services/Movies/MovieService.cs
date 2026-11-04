@@ -37,14 +37,16 @@ public class MovieService(IAppDbContext context, IFileService fileService) : IMo
     public async Task<MovieDetailResponse?> GetByIdAsync(int id, CancellationToken cancellationToken = default) 
         => await context.Movies
             .AsNoTracking()
+            .Where(x => x.Id == id)
             .ProjectToType<MovieDetailResponse>()
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<MovieDetailResponse?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default) 
         => await context.Movies
             .AsNoTracking()
+            .Where(x => x.Slug == slug)
             .ProjectToType<MovieDetailResponse>()
-            .FirstOrDefaultAsync(x => x.Slug == slug, cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<MovieDetailResponse> CreateAsync(CreateMovieRequest request, CancellationToken cancellationToken = default)
     {
@@ -97,20 +99,24 @@ public class MovieService(IAppDbContext context, IFileService fileService) : IMo
             .Where(c => request.CountryIds.Contains(c.Id))
             .ToListAsync(cancellationToken);
         
+        var oldPosterUrl = movie.PosterUrl;
+        
         request.Adapt(movie);
         movie.Slug = SlugHelper.ResolveSlug(request.Slug, request.Title);
         movie.Genres = genres;
         movie.Countries = countries;
         movie.UpdatedAt = DateTime.UtcNow;
-
-        var oldPosterUrl = movie.PosterUrl;
-
+        
         if (request.PosterFile is not null)
         {
-            movie.PosterUrl = await fileService.SaveImageAsync(request.PosterFile, "movies", null, cancellationToken)
+            movie.PosterUrl = await fileService.SaveImageAsync(request.PosterFile, "movies", oldPosterUrl, cancellationToken)
                 ?? oldPosterUrl;
         }
         else if (!string.IsNullOrWhiteSpace(request.PosterUrl))
+        {
+            movie.PosterUrl = request.PosterUrl;
+        }
+        else
         {
             movie.PosterUrl = oldPosterUrl;
         }
