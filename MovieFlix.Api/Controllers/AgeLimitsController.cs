@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieFlix.Application.Contracts.AgeLimits.Requests;
 using MovieFlix.Application.Contracts.AgeLimits.Responses;
@@ -17,6 +18,7 @@ public class AgeLimitsController(IAgeLimitService service) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<AgeLimitResponse>> CreateAsync(CreateAgeLimitRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -25,6 +27,7 @@ public class AgeLimitsController(IAgeLimitService service) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken = default) 
         => await service.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
 }

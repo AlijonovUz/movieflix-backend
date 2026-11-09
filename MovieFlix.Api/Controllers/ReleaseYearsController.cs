@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieFlix.Application.Contracts.ReleaseYears.Requests;
 using MovieFlix.Application.Contracts.ReleaseYears.Responses;
@@ -17,6 +18,7 @@ public class ReleaseYearsController(IReleaseYearService service) : ControllerBas
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<ReleaseYearResponse>> CreateAsync(CreateReleaseYearRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -25,6 +27,7 @@ public class ReleaseYearsController(IReleaseYearService service) : ControllerBas
     }
     
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken = default) 
         => await service.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
 }

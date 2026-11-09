@@ -175,3 +175,44 @@ Content-Type: application/json
 ### 4.9 Yilni o'chirish
 DELETE {{baseUrl}}/api/releaseyears/1
 Content-Type: application/json
+
+# 5. AUTHENTICATION (Ro'yxatdan o'tish & Kirish)
+
+### 5.1 Foydalanuvchini ro'yxatdan o'tkazish (Register)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "shaxzod",
+  "email": "shaxzod@example.com",
+  "password": "Password123!",
+  "firstName": "Shaxzod",
+  "lastName": "Alijonov"
+}
+
+### 5.2 Tizimga kirish - Username orqali (Login)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "shaxzod",
+  "password": "Password123!"
+}
+
+### 5.3 Tizimga kirish - Email orqali (Login)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "shaxzod@example.com",
+  "password": "Password123!"
+}
+
+### 5.4 Noto'g'ri parol bilan kirish (400 Bad Request tekshiruvi)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "shaxzod",
+  "password": "WrongPassword!"
+}

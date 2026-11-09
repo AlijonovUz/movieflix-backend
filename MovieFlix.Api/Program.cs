@@ -7,9 +7,9 @@ DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Har bir qatlam o'z servislarini ro'yxatdan o'tkazadi
-builder.Services.AddDatabase(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApiServices(builder.Configuration);
 builder.Services.AddApplication();
-builder.Services.AddApiServices();
 
 var app = builder.Build();
 

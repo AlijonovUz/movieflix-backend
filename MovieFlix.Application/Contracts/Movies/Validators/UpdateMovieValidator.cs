@@ -10,32 +10,32 @@ public class UpdateMovieValidator : AbstractValidator<UpdateMovieRequest>
         RuleLevelCascadeMode = CascadeMode.Stop;
 
         RuleFor(x => x.Title)
-            .NotEmpty().WithMessage("Film sarlavhasi kiritilishi shart.")
-            .MaximumLength(256).WithMessage("Film sarlavhasi 256 ta belgidan oshmasligi kerak.");
+            .NotEmpty().WithMessage("Title is required.")
+            .MaximumLength(256).WithMessage("Title must not exceed 256 characters.");
 
         When(x => !string.IsNullOrWhiteSpace(x.Slug), () =>
         {
             RuleFor(x => x.Slug)
-                .MaximumLength(256).WithMessage("Slug 256 ta belgidan oshmasligi kerak.");
+                .MaximumLength(256).WithMessage("Slug must not exceed 256 characters.");
         });
 
         RuleFor(x => x.Description)
-            .MaximumLength(2000).WithMessage("Film tavsifi 2000 ta belgidan oshmasligi kerak.");
+            .MaximumLength(2000).WithMessage("Description must not exceed 2000 characters.");
 
         RuleFor(x => x.DurationMinutes)
-            .GreaterThan(0).WithMessage("Film davomiyligi 0 dan katta bo'lishi kerak.");
+            .GreaterThan(0).WithMessage("Duration must be greater than 0 minutes.");
 
         RuleFor(x => x.Language)
-            .MaximumLength(50).WithMessage("Film tili 50 ta belgidan oshmasligi kerak.");
+            .MaximumLength(50).WithMessage("Language must not exceed 50 characters.");
 
         RuleFor(x => x.MovieType)
-            .IsInEnum().WithMessage("Noto'g'ri film turi tanlandi.");
+            .IsInEnum().WithMessage("Invalid movie type.");
 
         When(x => x.PosterFile is not null, () =>
         {
             RuleFor(x => x.PosterFile!.Length)
                 .LessThanOrEqualTo(5 * 1024 * 1024)
-                .WithMessage("Poster fayl hajmi 5MB dan oshmasligi kerak.");
+                .WithMessage("Poster file size must not exceed 5MB.");
 
             RuleFor(x => x.PosterFile!.FileName)
                 .Must(fileName =>
@@ -43,31 +43,31 @@ public class UpdateMovieValidator : AbstractValidator<UpdateMovieRequest>
                     var ext = Path.GetExtension(fileName).ToLowerInvariant();
                     return ext is ".jpg" or ".jpeg" or ".png" or ".webp";
                 })
-                .WithMessage("Faqat .jpg, .jpeg, .png, .webp formatidagi rasmlar qabul qilinadi.");
+                .WithMessage("Only .jpg, .jpeg, .png, and .webp formats are allowed.");
         });
 
         When(x => !string.IsNullOrWhiteSpace(x.PosterUrl), () =>
         {
             RuleFor(x => x.PosterUrl)
-                .MaximumLength(5000).WithMessage("Poster havolasi 5000 ta belgidan oshmasligi kerak.");
+                .MaximumLength(5000).WithMessage("Poster URL must not exceed 5000 characters.");
         });
 
         When(x => !string.IsNullOrWhiteSpace(x.TrailerUrl), () =>
         {
             RuleFor(x => x.TrailerUrl)
-                .MaximumLength(5000).WithMessage("Treyler havolasi 5000 ta belgidan oshmasligi kerak.");
+                .MaximumLength(5000).WithMessage("Trailer URL must not exceed 5000 characters.");
         });
 
         RuleFor(x => x.AgeLimitId)
-            .GreaterThan(0).WithMessage("Yosh chegarasi tanlanishi shart.");
+            .GreaterThan(0).WithMessage("Age limit is required.");
 
         RuleFor(x => x.ReleaseYearId)
-            .GreaterThan(0).WithMessage("Chiqarilgan yili tanlanishi shart.");
+            .GreaterThan(0).WithMessage("Release year is required.");
 
         RuleFor(x => x.GenreIds)
-            .NotEmpty().WithMessage("Kamida bitta janr tanlanishi shart.");
+            .NotEmpty().WithMessage("At least one genre must be selected.");
 
         RuleFor(x => x.CountryIds)
-            .NotEmpty().WithMessage("Kamida bitta davlat tanlanishi shart.");
+            .NotEmpty().WithMessage("At least one country must be selected.");
     }
 }

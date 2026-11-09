@@ -16,6 +16,11 @@ public class GlobalExceptionHandler : IExceptionHandler
                 "Validation Error",
                 string.Join("; ", validationException.Errors.Select(e => e.ErrorMessage))),
             
+            BadHttpRequestException badHttpRequestException => (
+                StatusCodes.Status400BadRequest,
+                "Bad Request",
+                badHttpRequestException.Message),
+            
             ApplicationException applicationException => (
                 StatusCodes.Status400BadRequest,
                 "Bad Request",

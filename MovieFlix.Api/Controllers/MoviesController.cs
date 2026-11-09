@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieFlix.Application.Common.Pagination.Parameters;
 using MovieFlix.Application.Common.Pagination.Responses;
@@ -39,6 +40,7 @@ public class MoviesController(IMovieService service) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<MovieDetailResponse>> CreateAsync([FromForm] CreateMovieRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -47,6 +49,7 @@ public class MoviesController(IMovieService service) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<MovieDetailResponse?>> UpdateAsync(int id, [FromForm] UpdateMovieRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -55,6 +58,7 @@ public class MoviesController(IMovieService service) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken = default) 
         => await service.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
 }

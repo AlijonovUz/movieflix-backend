@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MovieFlix.Application.Common.Pagination.Parameters;
 using MovieFlix.Application.Common.Pagination.Responses;
@@ -37,6 +38,7 @@ public class CountriesController(ICountryService service) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CountryResponse>> CreateAsync(CreateCountryRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -45,6 +47,7 @@ public class CountriesController(ICountryService service) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CountryResponse?>> UpdateAsync(int id, UpdateCountryRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -53,6 +56,7 @@ public class CountriesController(ICountryService service) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken = default)
         => await service.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
 }
