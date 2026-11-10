@@ -216,3 +216,37 @@ Content-Type: application/json
   "usernameOrEmail": "shaxzod",
   "password": "WrongPassword!"
 }
+
+# 6. EPISODES (Qismlar / Seriyalar)
+
+### 6.1 Bitta qismni ID bo'yicha olish
+GET {{baseUrl}}/api/episodes/1
+Accept: application/json
+
+### 6.2 Yangi qism qo'shish (Admin)
+POST {{baseUrl}}/api/episodes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "movieId": 1,
+  "number": 1,
+  "title": "1-qism: Boshlanish",
+  "videoUrl": "https://storage.movieflix.uz/videos/movie-1-ep-1.mp4"
+}
+
+### 6.3 Qismni yangilash (Admin)
+PUT {{baseUrl}}/api/episodes/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "number": 1,
+  "title": "1-qism: Yangilangan sarlavha",
+  "videoUrl": "https://storage.movieflix.uz/videos/movie-1-ep-1-hd.mp4"
+}
+
+### 6.4 Qismni o'chirish (Admin)
+DELETE {{baseUrl}}/api/episodes/1
+Authorization: Bearer {{token}}
+

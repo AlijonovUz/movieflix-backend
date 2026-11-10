@@ -31,13 +31,17 @@ public class CountryService(IAppDbContext context) : ICountryService
 
     public async Task<CountryResponse?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         => await context.Countries
+            .AsNoTracking()
+            .Where(x => x.Id == id)
             .ProjectToType<CountryResponse>()
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<CountryResponse?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default) 
         => await context.Countries
+            .AsNoTracking()
+            .Where(x => x.Slug == slug)
             .ProjectToType<CountryResponse>()
-            .FirstOrDefaultAsync(x => x.Slug == slug, cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<CountryResponse> CreateAsync(CreateCountryRequest request, CancellationToken cancellationToken = default)
     {

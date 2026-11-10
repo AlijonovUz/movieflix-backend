@@ -5,6 +5,7 @@ using MovieFlix.Application.Common.Interfaces;
 using MovieFlix.Application.Services.AgeLimits;
 using MovieFlix.Application.Services.Auth;
 using MovieFlix.Application.Services.Countries;
+using MovieFlix.Application.Services.Episodes;
 using MovieFlix.Application.Services.Genres;
 using MovieFlix.Application.Services.Movies;
 using MovieFlix.Application.Services.ReleaseYears;
@@ -29,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<IAgeLimitService, AgeLimitService>();
         services.AddScoped<IReleaseYearService, ReleaseYearService>();
         services.AddScoped<IMovieService, MovieService>();
+        services.AddScoped<IEpisodeService, EpisodeService>();
         services.AddScoped<IAuthService, AuthService>();
         
         return services;

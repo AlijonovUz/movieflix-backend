@@ -1,5 +1,6 @@
 using MovieFlix.Application.Contracts.AgeLimits.Responses;
 using MovieFlix.Application.Contracts.Countries.Responses;
+using MovieFlix.Application.Contracts.Episodes.Responses;
 using MovieFlix.Application.Contracts.Genres.Responses;
 using MovieFlix.Application.Contracts.ReleaseYears.Responses;
 using MovieFlix.Domain.Entities.Enums;
@@ -20,5 +21,6 @@ public record MovieDetailResponse(
     ReleaseYearResponse ReleaseYear,
     IReadOnlyList<GenreResponse> Genres,
     IReadOnlyList<CountryResponse> Countries,
+    IReadOnlyList<EpisodeResponse> Episodes,
     DateTime CreatedAt,
     DateTime? UpdatedAt);

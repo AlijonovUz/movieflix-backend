@@ -33,13 +33,17 @@ public class GenreService(IAppDbContext context) : IGenreService
 
     public async Task<GenreResponse?> GetByIdAsync(int id, CancellationToken cancellationToken = default) 
         => await context.Genres
+            .AsNoTracking()
+            .Where(x => x.Id == id)
             .ProjectToType<GenreResponse>()
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
 
     public async Task<GenreResponse?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default) 
         => await context.Genres
+            .AsNoTracking()
+            .Where(x => x.Slug == slug)
             .ProjectToType<GenreResponse>()
-            .FirstOrDefaultAsync(x => x.Slug == slug, cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
     
 
     public async Task<GenreResponse> CreateAsync(CreateGenreRequest request, CancellationToken cancellationToken = default)
