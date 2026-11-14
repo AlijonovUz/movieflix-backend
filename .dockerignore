@@ -1,0 +1,17 @@
+**/.git
+**/.github
+**/.vs
+**/.idea
+**/.vscode
+**/bin
+**/obj
+**/TestResults
+**/*.user
+**/*.db
+**/*.db-shm
+**/*.db-wal
+**/logs
+**/*.log
+.env
+.env.*
+!MovieFlix.Api/.env.example

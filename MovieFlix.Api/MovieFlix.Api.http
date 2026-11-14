@@ -217,7 +217,7 @@ Content-Type: application/json
   "password": "WrongPassword!"
 }
 
-# 6. EPISODES (Qismlar / Seriyalar)
+### 6. EPISODES (Qismlar / Seriyalar)
 
 ### 6.1 Bitta qismni ID bo'yicha olish
 GET {{baseUrl}}/api/episodes/1
@@ -249,4 +249,108 @@ Content-Type: application/json
 ### 6.4 Qismni o'chirish (Admin)
 DELETE {{baseUrl}}/api/episodes/1
 Authorization: Bearer {{token}}
+
+# 7. REVIEWS (Taqrizlar va izohlar)
+
+### 7.1 Barcha taqrizlarni olish (Filtrlash va Paginatsiya)
+GET {{baseUrl}}/api/reviews?pageNumber=1&pageSize=10&movieId=1
+Accept: application/json
+
+### 7.2 Bitta taqrizni olish (Daraxtsimon Replies bilan)
+GET {{baseUrl}}/api/reviews/1
+Accept: application/json
+
+### 7.3 Yangi taqriz qoldirish (User / Admin)
+POST {{baseUrl}}/api/reviews
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "movieId": 1,
+  "rating": 9,
+  "comment": "Juda ajoyib film, hammaga tavsiya qilaman!"
+}
+
+### 7.4 Taqrizga javob (Reply) yozish
+POST {{baseUrl}}/api/reviews
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "movieId": 1,
+  "parentId": 1,
+  "comment": "Men ham to'liq qo'shilaman!"
+}
+
+### 7.5 Taqrizni yangilash
+PUT {{baseUrl}}/api/reviews/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "rating": 10,
+  "comment": "Qayta ko'rib chiqdim, 10/10 film ekan!"
+}
+
+### 7.6 Taqrizni o'chirish
+DELETE {{baseUrl}}/api/reviews/1
+Authorization: Bearer {{token}}
+
+# 8. USERS (Foydalanuvchilar va Profil)
+
+### 8.1 Mening profilim (Get Profile)
+GET {{baseUrl}}/api/users/profile
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 8.2 Mening profilimni yangilash (Update Profile)
+PUT {{baseUrl}}/api/users/profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "shaxzod",
+  "email": "shaxzod@example.com",
+  "firstName": "Shaxzodbek",
+  "lastName": "Alijonov"
+}
+
+### 8.3 Parolni o'zgartirish (Change Password)
+PUT {{baseUrl}}/api/users/change-password
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "currentPassword": "Password123!",
+  "newPassword": "NewPassword123!",
+  "confirmNewPassword": "NewPassword123!"
+}
+
+### 8.4 Foydalanuvchilar ro'yxati (Admin - Pagination & Filter)
+GET {{baseUrl}}/api/users?pageNumber=1&pageSize=10
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 8.5 Bitta foydalanuvchini ID bo'yicha olish (Admin)
+GET {{baseUrl}}/api/users/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 8.6 Foydalanuvchini yangilash va rolini o'zgartirish (Admin)
+PUT {{baseUrl}}/api/users/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "user_updated",
+  "email": "user_updated@example.com",
+  "firstName": "Ali",
+  "lastName": "Valiyev",
+  "role": "Admin"
+}
+
+### 8.7 Foydalanuvchini o'chirish (Admin)
+DELETE {{baseUrl}}/api/users/2
+Authorization: Bearer {{token}}
+
 

@@ -4,8 +4,6 @@ public class Review : BaseEntity
 {
     public int? Rating { get; set; }
     public string Comment { get; set; } = string.Empty;
-    public int LikesCount { get; set; } = 0;
-    public int DislikesCount { get; set; } = 0;
     
     public int MovieId { get; set; }
     public Movie? Movie { get; set; }

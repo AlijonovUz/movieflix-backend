@@ -5,10 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MovieFlix.Api.Middlewares;
 
-public class GlobalExceptionHandler : IExceptionHandler
+public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
+        logger.LogError(exception, "Unhandled exception occurred: {Message}", exception.Message);
+
         var (statusCode, title, detail) = exception switch
         {
             ValidationException validationException => (
@@ -36,10 +38,20 @@ public class GlobalExceptionHandler : IExceptionHandler
                 "Conflict",
                 dbUpdateException.Message),
 
+            UnauthorizedAccessException unauthorizedException => (
+                StatusCodes.Status403Forbidden,
+                "Forbidden",
+                unauthorizedException.Message),
+
+            InvalidOperationException invalidOperationException => (
+                StatusCodes.Status400BadRequest,
+                "Bad Request",
+                invalidOperationException.Message),
+
             _ => (
                 StatusCodes.Status500InternalServerError,
                 "Internal Server Error",
-                "An unexpected error occured. Please try again later.")
+                exception.Message) // in dev, let's also see the message!
         };
 
         var problemDetails = new ProblemDetails

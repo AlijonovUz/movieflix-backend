@@ -22,9 +22,7 @@ public class EpisodeService(IAppDbContext context) : IEpisodeService
     {
         var movieExists = await context.Movies.FindAsync([request.MovieId], cancellationToken);
         if (movieExists is null)
-        {
             throw new KeyNotFoundException($"Movie with id {request.MovieId} not found");
-        }
         
         var episode = request.Adapt<Episode>();
 

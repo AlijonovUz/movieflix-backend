@@ -17,9 +17,7 @@ public class AuthService(IAppDbContext context, IJwtTokenGenerator generator) : 
             .AnyAsync(x => x.Username.ToLower() == request.Username.ToLower(), cancellationToken);
 
         if (usernameExists)
-        {
             throw new BadHttpRequestException("This username is already taken");
-        }
 
         if (!string.IsNullOrWhiteSpace(request.Email))
         {
@@ -27,9 +25,7 @@ public class AuthService(IAppDbContext context, IJwtTokenGenerator generator) : 
                 .AnyAsync(x => x.Email != null && x.Email.ToLower() == request.Email.ToLower(), cancellationToken);
 
             if (emailExists)
-            {
                 throw new BadHttpRequestException("This email is already taken");
-            }
         }
 
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -56,9 +52,7 @@ public class AuthService(IAppDbContext context, IJwtTokenGenerator generator) : 
                                       || (x.Email != null && x.Email.ToLower() == normalizedInput), cancellationToken);
 
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-        {
             throw new BadHttpRequestException("Incorrect username or password");
-        }
 
         var token = generator.Generate(user);
         

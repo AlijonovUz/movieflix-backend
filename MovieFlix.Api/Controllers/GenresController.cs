@@ -44,7 +44,7 @@ public class GenresController(IGenreService service) : ControllerBase
         CancellationToken cancellationToken = default)
     {
         var result = await service.CreateAsync(request, cancellationToken);
-        return CreatedAtAction("GetById", new { id = result.Id}, result);
+        return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
     }
 
     [HttpPut("{id:int}")]

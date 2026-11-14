@@ -42,11 +42,6 @@ public class EpisodesController(IEpisodeService service) : ControllerBase
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> DeleteAsync(
-        int id,
-        CancellationToken cancellationToken = default)
-    {
-        var isDeleted = await service.DeleteAsync(id, cancellationToken);
-        return isDeleted ? NoContent() : NotFound();
-    }
+    public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken = default) 
+        => await service.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
 }

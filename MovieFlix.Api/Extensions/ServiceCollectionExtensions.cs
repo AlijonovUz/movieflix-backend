@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MovieFlix.Api.Middlewares;
+using MovieFlix.Application.Common.Extensions;
 using MovieFlix.Infrastructure.Authentication;
 
 namespace MovieFlix.Api.Extensions;
@@ -13,8 +14,16 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddControllers();
+        services.AddControllers(options =>
+            {
+                options.SuppressAsyncSuffixInActionNames = false;
+            })
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new TashkentDateTimeJsonConverter());
+            });
         services.AddOpenApi();
+        services.AddHttpContextAccessor();
         
         // Kichik harfli URL mashrutlar
         services.Configure<RouteOptions>(options => options.LowercaseUrls = true);

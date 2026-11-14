@@ -1,0 +1,24 @@
+services:
+  movieflix-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: movieflix-api
+    restart: unless-stopped
+    ports:
+      - "5097:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+      - ASPNETCORE_HTTP_PORTS=8080
+      - AllowedHosts=${AllowedHosts:-*}
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection:-Data Source=/app/data/movie.db}
+      - Jwt__SecretKey=${Jwt__SecretKey:-MovieFlix_Super_Secret_Key_For_Jwt_Token_2026}
+      - Jwt__Issuer=${Jwt__Issuer:-MovieFlix}
+      - Jwt__Audience=${Jwt__Audience:-MovieFlix}
+      - Jwt__ExpiresInMinutes=${Jwt__ExpiresInMinutes:-120}
+      - TZ=Asia/Tashkent
+    volumes:
+      - movieflix_data:/app/data
+
+volumes:
+  movieflix_data:

@@ -285,12 +285,6 @@ namespace MovieFlix.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("DislikesCount")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("LikesCount")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("MovieId")
                         .HasColumnType("INTEGER");
 
