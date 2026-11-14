@@ -13,4 +13,5 @@ public class User : BaseEntity
     
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 }

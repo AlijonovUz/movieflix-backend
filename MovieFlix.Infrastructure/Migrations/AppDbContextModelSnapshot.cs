@@ -245,6 +245,52 @@ namespace MovieFlix.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("MovieFlix.Domain.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ExtraData")
+                        .HasMaxLength(2000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications", (string)null);
+                });
+
             modelBuilder.Entity("MovieFlix.Domain.Entities.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -459,6 +505,16 @@ namespace MovieFlix.Infrastructure.Migrations
                     b.Navigation("ReleaseYear");
                 });
 
+            modelBuilder.Entity("MovieFlix.Domain.Entities.Notification", b =>
+                {
+                    b.HasOne("MovieFlix.Domain.Entities.User", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MovieFlix.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("MovieFlix.Domain.Entities.User", "User")
@@ -520,6 +576,8 @@ namespace MovieFlix.Infrastructure.Migrations
 
             modelBuilder.Entity("MovieFlix.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Notifications");
+
                     b.Navigation("RefreshTokens");
 
                     b.Navigation("Reviews");

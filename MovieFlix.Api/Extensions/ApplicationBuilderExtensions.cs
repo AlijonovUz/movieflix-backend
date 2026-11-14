@@ -1,5 +1,6 @@
 using MovieFlix.Application.Commands.Cli;
 using MovieFlix.Application.Common.Interfaces;
+using MovieFlix.Infrastructure.Hubs;
 
 namespace MovieFlix.Api.Extensions;
 
@@ -35,6 +36,7 @@ public static class ApplicationBuilderExtensions
         app.UseAuthorization();
         
         app.MapControllers();
+        app.MapHub<NotificationHub>("/hubs/notifications");
         
         return app;
     }

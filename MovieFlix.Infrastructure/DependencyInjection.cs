@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MovieFlix.Application.Common.Interfaces;
 using MovieFlix.Infrastructure.Authentication;
+using MovieFlix.Infrastructure.BackgroundServices;
 using MovieFlix.Infrastructure.Data;
 using MovieFlix.Infrastructure.Services;
 
@@ -17,6 +18,7 @@ public static class DependencyInjection
         services.AddDatabase(configuration);
         services.AddAuthenticationInfrastructure(configuration);
         services.AddStorageInfrastructure();
+        services.AddNotificationInfrastructure();
 
         return services;
     }
@@ -50,6 +52,16 @@ public static class DependencyInjection
     private static IServiceCollection AddStorageInfrastructure(this IServiceCollection services)
     {
         services.AddScoped<IFileService, FileService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddNotificationInfrastructure(this IServiceCollection services)
+    {
+        services.AddSignalR();
+        services.AddSingleton<INotificationQueue, NotificationQueue>();
+        services.AddHostedService<BroadcastNotificationWorker>();
+        services.AddScoped<INotificationSender, SignalRNotificationSender>();
 
         return services;
     }

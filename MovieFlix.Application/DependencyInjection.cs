@@ -11,6 +11,7 @@ using MovieFlix.Application.Services.CurrenUser;
 using MovieFlix.Application.Services.Episodes;
 using MovieFlix.Application.Services.Genres;
 using MovieFlix.Application.Services.Movies;
+using MovieFlix.Application.Services.Notifications;
 using MovieFlix.Application.Services.ReleaseYears;
 using MovieFlix.Application.Services.Reviews;
 using MovieFlix.Application.Services.Users;
@@ -42,6 +43,7 @@ public static class DependencyInjection
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IReviewService, ReviewService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<INotificationService, NotificationService>();
         
         return services;
     }

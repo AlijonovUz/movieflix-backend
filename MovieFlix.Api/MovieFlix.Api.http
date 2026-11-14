@@ -369,4 +369,37 @@ Content-Type: application/json
 DELETE {{baseUrl}}/api/users/2
 Authorization: Bearer {{token}}
 
+# 9. NOTIFICATIONS (Bildirishnomalar)
+
+### 9.1 Mening bildirishnomalarim ro'yxati (Pagination & Filter)
+GET {{baseUrl}}/api/notifications?pageNumber=1&pageSize=10
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 9.2 Faqat o'qilmagan bildirishnomalarni olish
+GET {{baseUrl}}/api/notifications?isRead=false&pageNumber=1&pageSize=10
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### 9.3 Bitta bildirishnomani o'qilgan qilish (Mark as Read)
+PUT {{baseUrl}}/api/notifications/1/read
+Authorization: Bearer {{token}}
+
+### 9.4 Barcha bildirishnomalarni o'qilgan qilish (Mark All as Read)
+PUT {{baseUrl}}/api/notifications/read-all
+Authorization: Bearer {{token}}
+
+### 9.5 Admin: Ommaviy xabar yuborish (Broadcast)
+POST {{baseUrl}}/api/notifications/broadcast
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Yangi premyera!",
+  "message": "Platformamizga yangi film yuklandi, tomosha qilishga shoshiling!",
+  "extraData": "{\"movieId\": 1}",
+  "type": 0
+}
+
+
 
