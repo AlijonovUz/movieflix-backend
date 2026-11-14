@@ -245,6 +245,42 @@ namespace MovieFlix.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("MovieFlix.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens", (string)null);
+                });
+
             modelBuilder.Entity("MovieFlix.Domain.Entities.ReleaseYear", b =>
                 {
                     b.Property<int>("Id")
@@ -423,6 +459,17 @@ namespace MovieFlix.Infrastructure.Migrations
                     b.Navigation("ReleaseYear");
                 });
 
+            modelBuilder.Entity("MovieFlix.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("MovieFlix.Domain.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MovieFlix.Domain.Entities.Review", b =>
                 {
                     b.HasOne("MovieFlix.Domain.Entities.Movie", "Movie")
@@ -473,6 +520,8 @@ namespace MovieFlix.Infrastructure.Migrations
 
             modelBuilder.Entity("MovieFlix.Domain.Entities.User", b =>
                 {
+                    b.Navigation("RefreshTokens");
+
                     b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618

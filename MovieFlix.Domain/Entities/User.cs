@@ -12,4 +12,5 @@ public class User : BaseEntity
     public UserRole Role { get; set; } = UserRole.User;
     
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

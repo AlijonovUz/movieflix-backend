@@ -39,8 +39,12 @@ public class AuthService(IAppDbContext context, IJwtTokenGenerator generator) : 
         await context.SaveChangesAsync(cancellationToken);
 
         var token = generator.Generate(user);
+        var refreshToken = CreateRefreshToken(user.Id);
         
-        var response = user.Adapt<AuthResponse>() with { Token = token };
+        context.RefreshTokens.Add(refreshToken);
+        await context.SaveChangesAsync(cancellationToken);
+        
+        var response = user.Adapt<AuthResponse>() with { Token = token, RefreshToken = refreshToken.Token };
         return response;
     }
 
@@ -55,8 +59,62 @@ public class AuthService(IAppDbContext context, IJwtTokenGenerator generator) : 
             throw new BadHttpRequestException("Incorrect username or password");
 
         var token = generator.Generate(user);
+        var refreshToken = CreateRefreshToken(user.Id);
         
-        var response = user.Adapt<AuthResponse>() with { Token = token };
+        context.RefreshTokens.Add(refreshToken);
+        await context.SaveChangesAsync(cancellationToken);
+        
+        var response = user.Adapt<AuthResponse>() with { Token = token, RefreshToken = refreshToken.Token };
         return response;
     }
+
+    public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var existingToken = await context.RefreshTokens
+            .Include(x => x.User)
+            .FirstOrDefaultAsync(x => x.Token == request.RefreshToken, cancellationToken);
+        
+        if (existingToken is null || existingToken.IsRevoked || existingToken.ExpiresAt < DateTime.UtcNow)
+            throw new BadHttpRequestException("Invalid or expired refresh token.");
+
+        existingToken.IsRevoked = true;
+        existingToken.UpdatedAt = DateTime.UtcNow;
+
+        var newRefreshToken = CreateRefreshToken(existingToken.UserId);
+        context.RefreshTokens.Add(newRefreshToken);
+        await context.SaveChangesAsync(cancellationToken);
+
+        var newAccessToken = generator.Generate(existingToken.User!);
+        
+        var response = existingToken.User!.Adapt<AuthResponse>() with
+        {
+            Token = newAccessToken, RefreshToken = newRefreshToken.Token
+        };
+        
+        return response;
+    }
+
+    public async Task<bool> RevokeTokenAsync(RevokeTokenRequest request, CancellationToken cancellationToken = default)
+    {
+        var existingToken = await context.RefreshTokens
+            .FirstOrDefaultAsync(x => x.Token == request.RefreshToken, cancellationToken);
+
+        if (existingToken is null || existingToken.IsRevoked)
+            return false;
+        
+        existingToken.IsRevoked = true;
+        existingToken.UpdatedAt = DateTime.UtcNow;
+        
+        await context.SaveChangesAsync(cancellationToken);
+        return true;
+    }
+
+    private RefreshToken CreateRefreshToken(int userId) => new()
+    {
+        Token = generator.GenerateRefreshToken(),
+        ExpiresAt = DateTime.UtcNow.AddDays(7),
+        IsRevoked = false,
+        UserId = userId
+    };
 }

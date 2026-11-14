@@ -16,30 +16,23 @@ public class UsersController(IUserService service) : ControllerBase
     [HttpGet("profile")]
     [Authorize]
     public async Task<ActionResult<UserResponse>> GetProfileAsync(CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetProfileAsync(cancellationToken);
-        return Ok(result);
-    }
+        => Ok(await service.GetProfileAsync(cancellationToken));
 
     [HttpPut("profile")]
     [Authorize]
     public async Task<ActionResult<UserResponse>> UpdateProfileAsync(
         UpdateUserRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.UpdateProfileAsync(request, cancellationToken);
-        return Ok(result);
-    }
+        => Ok(await service.UpdateProfileAsync(request, cancellationToken));
 
     [HttpPut("change-password")]
     [Authorize]
     public async Task<IActionResult> ChangePasswordAsync(
         ChangePasswordRequest request,
         CancellationToken cancellationToken = default)
-    {
-        await service.ChangePasswordAsync(request, cancellationToken);
-        return NoContent();
-    }
+        => await service.ChangePasswordAsync(request, cancellationToken)
+            ? NoContent()
+            : BadRequest();
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
@@ -47,20 +40,12 @@ public class UsersController(IUserService service) : ControllerBase
         [FromQuery] PaginationParameters parameters,
         [FromQuery] UserFilterParameters filter,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetAllAsync(parameters, filter, cancellationToken);
-        return Ok(result);
-    }
+        => Ok(await service.GetAllAsync(parameters, filter, cancellationToken));
 
     [HttpGet("{id:int}")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<UserResponse>> GetByIdAsync(
-        int id,
-        CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetByIdAsync(id, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+    public async Task<ActionResult<UserResponse>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        => await service.GetByIdAsync(id, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = "Admin")]
@@ -68,15 +53,10 @@ public class UsersController(IUserService service) : ControllerBase
         int id,
         UpdateUserRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.UpdateAsync(id, request, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+        => await service.UpdateAsync(id, request, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> DeleteAsync(
-        int id,
-        CancellationToken cancellationToken = default) 
+    public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken = default) 
         => await service.DeleteAsync(id, cancellationToken) ? NoContent() : NotFound();
 }

@@ -9,4 +9,5 @@ public record AuthResponse(
     string? FirstName,
     string? LastName,
     UserRole Role,
-    string Token);
+    string Token,
+    string RefreshToken);

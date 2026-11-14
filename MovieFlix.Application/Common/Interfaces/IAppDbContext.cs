@@ -11,6 +11,7 @@ public interface IAppDbContext
     DbSet<Country> Countries { get; }
     DbSet<Review> Reviews { get; }
     DbSet<User> Users { get; }
+    DbSet<RefreshToken> RefreshTokens { get; }
     DbSet<AgeLimit> AgeLimits { get; }
     DbSet<ReleaseYear> ReleaseYears { get; }
     

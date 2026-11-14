@@ -18,42 +18,32 @@ public class CountriesController(ICountryService service) : ControllerBase
         [FromQuery] PaginationParameters parameters,
         [FromQuery] CountryFilterParameters filter,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetAllAsync(parameters, filter, cancellationToken);
-        return Ok(result);
-    }
+        => Ok(await service.GetAllAsync(parameters, filter, cancellationToken));
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<CountryResponse?>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetByIdAsync(id, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+        => await service.GetByIdAsync(id, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpGet("{slug}")]
-    public async Task<ActionResult<CountryResponse?>> GetBySlugAsync(string slug, CancellationToken cancellationToken)
-    {
-        var result = await service.GetBySlugAsync(slug, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+    public async Task<ActionResult<CountryResponse?>> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
+        => await service.GetBySlugAsync(slug, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<CountryResponse>> CreateAsync(CreateCountryRequest request,
+    public async Task<ActionResult<CountryResponse>> CreateAsync(
+        CreateCountryRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.CreateAsync(request, cancellationToken);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
-    }
+        => await service.CreateAsync(request, cancellationToken) is { } result
+            ? CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result)
+            : BadRequest();
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<CountryResponse?>> UpdateAsync(int id, UpdateCountryRequest request,
+    public async Task<ActionResult<CountryResponse?>> UpdateAsync(
+        int id,
+        UpdateCountryRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.UpdateAsync(id, request, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+        => await service.UpdateAsync(id, request, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]

@@ -13,17 +13,25 @@ public class AuthController(IAuthService authService) : ControllerBase
     public async Task<ActionResult<AuthResponse>> RegisterAsync(
         [FromBody] RegisterRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await authService.RegisterAsync(request, cancellationToken);
-        return Ok(result);
-    }
+        => Ok(await authService.RegisterAsync(request, cancellationToken));
 
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> LoginAsync(
         [FromBody] LoginRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await authService.LoginAsync(request, cancellationToken);
-        return Ok(result);
-    }
+        => Ok(await authService.LoginAsync(request, cancellationToken));
+
+    [HttpPost("refresh-token")]
+    public async Task<ActionResult<AuthResponse>> RefreshTokenAsync(
+        [FromBody] RefreshTokenRequest request,
+        CancellationToken cancellationToken = default)
+        => Ok(await authService.RefreshTokenAsync(request, cancellationToken));
+
+    [HttpPost("revoke-token")]
+    public async Task<IActionResult> RevokeTokenAsync(
+        [FromBody] RevokeTokenRequest request,
+        CancellationToken cancellationToken = default)
+        => await authService.RevokeTokenAsync(request, cancellationToken)
+            ? NoContent()
+            : BadRequest(new { message = "Invalid or already revoked refresh token." });
 }

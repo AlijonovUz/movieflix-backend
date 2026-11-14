@@ -12,19 +12,12 @@ public class AgeLimitsController(IAgeLimitService service) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<AgeLimitResponse>>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetAllAsync(cancellationToken);
-        return Ok(result);
-    }
+        => Ok(await service.GetAllAsync(cancellationToken));
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<AgeLimitResponse>> CreateAsync(CreateAgeLimitRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var result = await service.CreateAsync(request, cancellationToken);
-        return StatusCode(StatusCodes.Status201Created, result);
-    }
+    public async Task<ActionResult<AgeLimitResponse>> CreateAsync(CreateAgeLimitRequest request, CancellationToken cancellationToken = default)
+        => StatusCode(StatusCodes.Status201Created, await service.CreateAsync(request, cancellationToken));
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]

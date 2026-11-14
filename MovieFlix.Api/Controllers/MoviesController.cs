@@ -18,44 +18,32 @@ public class MoviesController(IMovieService service) : ControllerBase
         [FromQuery] PaginationParameters parameters,
         [FromQuery] MovieFilterParameters filter,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetAllAsync(parameters, filter, cancellationToken);
-        return Ok(result);
-    }
+        => Ok(await service.GetAllAsync(parameters, filter, cancellationToken));
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<MovieDetailResponse?>> GetByIdAsync(int id,
-        CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetByIdAsync(id, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+    public async Task<ActionResult<MovieDetailResponse?>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        => await service.GetByIdAsync(id, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpGet("{slug}")]
-    public async Task<ActionResult<MovieDetailResponse?>> GetBySlugAsync(string slug,
-        CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetBySlugAsync(slug, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+    public async Task<ActionResult<MovieDetailResponse?>> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
+        => await service.GetBySlugAsync(slug, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<MovieDetailResponse>> CreateAsync([FromForm] CreateMovieRequest request,
+    public async Task<ActionResult<MovieDetailResponse>> CreateAsync(
+        [FromForm] CreateMovieRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.CreateAsync(request, cancellationToken);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
-    }
+        => await service.CreateAsync(request, cancellationToken) is { } result
+            ? CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result)
+            : BadRequest();
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult<MovieDetailResponse?>> UpdateAsync(int id, [FromForm] UpdateMovieRequest request,
+    public async Task<ActionResult<MovieDetailResponse?>> UpdateAsync(
+        int id,
+        [FromForm] UpdateMovieRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.UpdateAsync(id, request, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+        => await service.UpdateAsync(id, request, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]

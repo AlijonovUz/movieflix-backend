@@ -14,20 +14,16 @@ public class EpisodesController(IEpisodeService service) : ControllerBase
     public async Task<ActionResult<EpisodeResponse?>> GetByIdAsync(
         int id,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetByIdAsync(id, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+        => await service.GetByIdAsync(id, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpPost]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<EpisodeResponse>> CreateAsync(
         CreateEpisodeRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.CreateAsync(request, cancellationToken);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
-    }
+        => await service.CreateAsync(request, cancellationToken) is { } result
+            ? CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result)
+            : BadRequest();
 
     [HttpPut("{id:int}")]
     [Authorize(Roles = "Admin")]
@@ -35,10 +31,7 @@ public class EpisodesController(IEpisodeService service) : ControllerBase
         int id,
         UpdateEpisodeRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.UpdateAsync(id, request, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+        => await service.UpdateAsync(id, request, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "Admin")]

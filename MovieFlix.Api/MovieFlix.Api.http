@@ -217,6 +217,22 @@ Content-Type: application/json
   "password": "WrongPassword!"
 }
 
+### 5.5 Tokenni yangilash (Refresh Token)
+POST {{baseUrl}}/api/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 5.6 Sessiyani bekor qilish / Logout (Revoke Token)
+POST {{baseUrl}}/api/auth/revoke-token
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
 ### 6. EPISODES (Qismlar / Seriyalar)
 
 ### 6.1 Bitta qismni ID bo'yicha olish

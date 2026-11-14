@@ -18,29 +18,22 @@ public class ReviewsController(IReviewService service) : ControllerBase
         [FromQuery] PaginationParameters parameters,
         [FromQuery] ReviewFilterParameters filter,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetAllAsync(parameters, filter, cancellationToken);
-        return Ok(result);
-    }
+        => Ok(await service.GetAllAsync(parameters, filter, cancellationToken));
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ReviewResponse?>> GetByIdAsync(
         int id,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.GetByIdAsync(id, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+        => await service.GetByIdAsync(id, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpPost]
     [Authorize]
     public async Task<ActionResult<ReviewResponse>> CreateAsync(
         CreateReviewRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.CreateAsync(request, cancellationToken);
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result);
-    }
+        => await service.CreateAsync(request, cancellationToken) is { } result
+            ? CreatedAtAction(nameof(GetByIdAsync), new { id = result.Id }, result)
+            : BadRequest();
 
     [HttpPut("{id:int}")]
     [Authorize]
@@ -48,10 +41,7 @@ public class ReviewsController(IReviewService service) : ControllerBase
         int id,
         UpdateReviewRequest request,
         CancellationToken cancellationToken = default)
-    {
-        var result = await service.UpdateAsync(id, request, cancellationToken);
-        return result is null ? NotFound() : Ok(result);
-    }
+        => await service.UpdateAsync(id, request, cancellationToken) is { } result ? Ok(result) : NotFound();
 
     [HttpDelete("{id:int}")]
     [Authorize]
