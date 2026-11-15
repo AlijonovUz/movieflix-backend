@@ -33,6 +33,11 @@ public class BroadcastNotificationWorker(
                 var userIds = await context.Users
                     .Select(x => x.Id)
                     .ToListAsync(stoppingToken);
+
+                if (userIds.Count == 0)
+                {
+                    continue;
+                }
                 
                 var notifications = userIds.Select(id => request.ToNotification(id)).ToList();
 
@@ -44,14 +49,7 @@ public class BroadcastNotificationWorker(
                     await context.SaveChangesAsync(stoppingToken);
                 }
 
-                var response = new NotificationResponse(
-                    Id: 0,
-                    Title: request.Title,
-                    Message: request.Message,
-                    ExtraData: notifications.Count > 0 ? notifications[0].ExtraData : null,
-                    Type: request.Type,
-                    IsRead: false,
-                    CreatedAt: DateTime.UtcNow);
+                var response = request.ToNotification().Adapt<NotificationResponse>();
                 
                 await hubContext.Clients.All.ReceiveNotification(response);
                 
