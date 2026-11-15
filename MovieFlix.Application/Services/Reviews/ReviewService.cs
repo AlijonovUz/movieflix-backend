@@ -136,7 +136,7 @@ public class ReviewService(
                     Message: $"'{movie.Title}' filmidagi sharhingizga yangi javob qoldirildi.",
                     Type: NotificationType.ReviewReply,
                     UserId: parent.UserId,
-                    ExtraData: $"{{\"movieId\": {review.MovieId}, \"reviewId\": {review.Id}, \"parentId\": {parent.Id}}}"
+                    ExtraData: new { movieId = review.MovieId, reviewId = review.Id, parentId = parent.Id }
                 ), cancellationToken);
             }
         }
@@ -146,7 +146,7 @@ public class ReviewService(
                 Title: "Yangi sharh qoldirildi",
                 Message: $"'{movie.Title}' filmiga yangi sharh qoldirildi.",
                 Type: NotificationType.NewReview,
-                ExtraData: $"{{\"movieId\": {review.MovieId}, \"reviewId\": {review.Id}}}"
+                ExtraData: new { movieId = review.MovieId, reviewId = review.Id }
             ), cancellationToken);
         }
     }

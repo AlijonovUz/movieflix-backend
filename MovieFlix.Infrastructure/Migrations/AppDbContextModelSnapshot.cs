@@ -255,7 +255,6 @@ namespace MovieFlix.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ExtraData")
-                        .HasMaxLength(2000)
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsRead")

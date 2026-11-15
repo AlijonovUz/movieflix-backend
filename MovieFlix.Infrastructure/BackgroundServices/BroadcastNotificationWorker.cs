@@ -44,7 +44,15 @@ public class BroadcastNotificationWorker(
                     await context.SaveChangesAsync(stoppingToken);
                 }
 
-                var response = request.Adapt<NotificationResponse>() with { CreatedAt = DateTime.UtcNow };
+                var response = new NotificationResponse(
+                    Id: 0,
+                    Title: request.Title,
+                    Message: request.Message,
+                    ExtraData: notifications.Count > 0 ? notifications[0].ExtraData : null,
+                    Type: request.Type,
+                    IsRead: false,
+                    CreatedAt: DateTime.UtcNow);
+                
                 await hubContext.Clients.All.ReceiveNotification(response);
                 
                 logger.LogInformation("Broadcast message successfully sent to {count} users", userIds.Count());

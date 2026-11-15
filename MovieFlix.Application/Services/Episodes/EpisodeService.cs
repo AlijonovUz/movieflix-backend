@@ -32,7 +32,7 @@ public class EpisodeService(IAppDbContext context, INotificationService notifica
         context.Episodes.Add(episode);
         await context.SaveChangesAsync(cancellationToken);
     
-        await SendNotification(episode, cancellationToken);
+        await SendNotification(movieExists, episode, cancellationToken);
 
         return episode.Adapt<EpisodeResponse>();
     }
@@ -59,20 +59,20 @@ public class EpisodeService(IAppDbContext context, INotificationService notifica
         return count > 0;
     }
 
-    private async Task SendNotification(Episode episode, CancellationToken cancellationToken = default)
+    private async Task SendNotification(Movie movie, Episode episode, CancellationToken cancellationToken = default)
     {
-        var isSeries = episode.Movie?.MovieType == MovieType.Series;
+        var isSeries = movie.MovieType == MovieType.Series;
         var title = isSeries ? "Yangi qism chiqdi!" : "Yangi film premyerasi!";
         var message = isSeries
-            ? $"'{episode.Movie?.Title}' serialining {episode.Number}-qismi chiqdi!"
-            : $"'{episode.Movie?.Title}' filmi tomosha qilish uchun platformaga yuklandi!";
+            ? $"'{movie.Title}' serialining {episode.Number}-qismi chiqdi!"
+            : $"'{movie.Title}' filmi tomosha qilish uchun platformaga yuklandi!";
         var type = isSeries ? NotificationType.NewEpisode : NotificationType.NewMovie;
 
          await notificationService.SendBroadcastAsync(new SendNotificationRequest(
             Title: title,
             Message: message,
             Type: type,
-            ExtraData: $"{{\"movieId\": {episode.MovieId}, \"episodeId\": {episode.Id}"
+            ExtraData: new { movieId = episode.MovieId, episodeId = episode.Id }
         ), cancellationToken);
     }
 }

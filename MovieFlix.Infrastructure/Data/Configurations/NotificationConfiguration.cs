@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MovieFlix.Domain.Entities;
@@ -26,7 +27,9 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
             .HasMaxLength(50);
 
         builder.Property(x => x.ExtraData)
-            .HasMaxLength(2000);
+            .HasConversion(
+                v => v.HasValue ? v.Value.GetRawText() : null,
+                v => string.IsNullOrEmpty(v) ? null : JsonDocument.Parse(v, default).RootElement);
 
         builder.Property(x => x.IsRead)
             .IsRequired();

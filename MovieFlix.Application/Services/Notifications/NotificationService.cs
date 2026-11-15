@@ -95,7 +95,14 @@ public class NotificationService(
         context.Notifications.AddRange(notifications);
         await context.SaveChangesAsync(cancellationToken);
         
-        var response = request.Adapt<NotificationResponse>() with { CreatedAt = DateTime.UtcNow };
+        var response = new NotificationResponse(
+            Id: 0,
+            Title: request.Title,
+            Message: request.Message,
+            ExtraData: notifications[0].ExtraData,
+            Type: request.Type,
+            IsRead: false,
+            CreatedAt: DateTime.UtcNow);
         await notificationSender.SendToUsersAsync(adminIds, response, cancellationToken);
     }
 

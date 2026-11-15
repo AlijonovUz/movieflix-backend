@@ -1,3 +1,4 @@
+using System.Text.Json;
 using MovieFlix.Domain.Entities;
 using MovieFlix.Domain.Entities.Enums;
 
@@ -8,7 +9,7 @@ public record SendNotificationRequest(
     string Message,
     NotificationType Type = NotificationType.SystemBroadcast,
     int? UserId = null,
-    string? ExtraData = null)
+    object? ExtraData = null)
 {
     public Notification ToNotification(int targetUserId) => new()
     {
@@ -16,7 +17,7 @@ public record SendNotificationRequest(
         Title = Title,
         Message = Message,
         Type = Type,
-        ExtraData = ExtraData
+        ExtraData = ExtraData is null ? null : JsonSerializer.SerializeToElement(ExtraData)
     };
 
     public Notification ToNotification() => new()
@@ -25,6 +26,6 @@ public record SendNotificationRequest(
         Title = Title,
         Message = Message,
         Type = Type,
-        ExtraData = ExtraData
+        ExtraData = ExtraData is null ? null : JsonSerializer.SerializeToElement(ExtraData)
     };
 }
