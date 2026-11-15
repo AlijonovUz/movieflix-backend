@@ -31,6 +31,9 @@ public static class ApplicationBuilderExtensions
         
         app.UseHttpsRedirection();
         app.UseStaticFiles();
+
+        app.UseCors("DefaultPolicy");
+        app.UseRateLimiter();
         
         app.UseAuthentication();
         app.UseAuthorization();

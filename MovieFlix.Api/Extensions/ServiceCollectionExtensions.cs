@@ -1,4 +1,6 @@
+using System.Collections.Concurrent;
 using System.Text;
+using System.Threading.RateLimiting;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -37,6 +39,10 @@ public static class ServiceCollectionExtensions
         
         // JWT Autentifikatsiya
         services.AddJwtAuthentication(configuration);
+        
+        // CORS va Rate Limiting
+        services.AddCorsPolicy(configuration);
+        services.AddRateLimiting();
         
         return services;
     }
@@ -83,4 +89,47 @@ public static class ServiceCollectionExtensions
         services.AddAuthorization();
         return services;
     }
+
+    public static IServiceCollection AddCorsPolicy(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var allowedOrigins = configuration["Cors:AllowedOrigins"]
+            ?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            ?? ["http://localhost:3000", "http://localhost:5173"];
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy("DefaultPolicy", policy =>
+            {
+                policy.WithOrigins(allowedOrigins)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddRateLimiting(this IServiceCollection services)
+    {
+        services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(http => 
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: http.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+                    factory: _ => new() { PermitLimit = 60, Window = TimeSpan.FromMinutes(1) }));
+            
+            options.AddPolicy("LoginPolicy", http =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: $"login_{http.Connection.RemoteIpAddress}",
+                    factory: _ => new() { PermitLimit = 3, Window = TimeSpan.FromMinutes(1) }));
+        });
+        
+        return services;
+    }
+    
 }

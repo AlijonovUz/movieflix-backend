@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using MovieFlix.Application.Contracts.Auth.Requests;
 using MovieFlix.Application.Contracts.Auth.Responses;
 using MovieFlix.Application.Services.Auth;
@@ -15,6 +16,7 @@ public class AuthController(IAuthService authService) : ControllerBase
         CancellationToken cancellationToken = default)
         => Ok(await authService.RegisterAsync(request, cancellationToken));
 
+    [EnableRateLimiting("LoginPolicy")]
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> LoginAsync(
         [FromBody] LoginRequest request,
